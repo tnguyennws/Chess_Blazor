@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Shared\Chess_Blazor.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,26 @@
+﻿.row{
+
+}
+
+.cell{
+    height: 70px;
+    width: 70px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.row:nth-child(2n+1) .cell:nth-child(2n+1){
+    background: #eee;
+}
+
+.row:nth-child(2n+1) .cell:nth-child(2n) {
+    background: tan;
+}
+
+.row:nth-child(2n) .cell:nth-child(2n+1) {
+    background: tan;
+}
+
+.row:nth-child(2n) .cell:nth-child(2n) {
+    background: #eee;
+}
