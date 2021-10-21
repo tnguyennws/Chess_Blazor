@@ -5,6 +5,10 @@
     border: 1px solid black;
 }
 
+.cell.active{
+    border: 3px solid blue;
+}
+
 .row:nth-child(2n+1) .cell:nth-child(2n+1){
     background: #eee;
 }
@@ -24,9 +28,13 @@
 .piece {
     float: none;
     width: 80px;
-    height: 80px;
+    height: 50px;
     font-size: 50px;
-    text-align: center;
+    text-align: start;
     display: table-cell;
-    vertical-align: middle;
+    vertical-align: central;
+}
+
+.piece.active{
+    border: 1px solid teal;
 }

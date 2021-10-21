@@ -12,8 +12,9 @@
                 Color = "Noir",
                 Column = i,
                 Row = 1,
-                Direction = PieceDirection.Pion,
-                Name = "Pion"
+                Direction = PieceDirection.PionN,
+                Name = "Pion",
+                Value = 1
             });
 
             whitePiece.Add(new Piece
@@ -21,8 +22,9 @@
                 Color = "Blanc",
                 Column = i,
                 Row = 6,
-                Direction = PieceDirection.Pion,
-                Name = "Pion"
+                Direction = PieceDirection.PionB,
+                Name = "Pion",
+                Value = 1
             });
         }
 
@@ -34,7 +36,8 @@
                 Column = i,
                 Row = 0,
                 Direction = PieceDirection.Tour,
-                Name = "Tour"
+                Name = "Tour",
+                Value = 5
             });
 
             whitePiece.Add(new Piece
@@ -43,7 +46,8 @@
                 Column = i,
                 Row = 7,
                 Direction = PieceDirection.Tour,
-                Name = "Tour"
+                Name = "Tour",
+                Value = 5
             });
         }
 
@@ -55,7 +59,8 @@
                 Column = i,
                 Row = 0,
                 Direction = PieceDirection.Cavalier,
-                Name = "Cavalier"
+                Name = "Cavalier",
+                Value = 3
             });
 
             whitePiece.Add(new Piece
@@ -64,7 +69,8 @@
                 Column = i,
                 Row = 7,
                 Direction = PieceDirection.Cavalier,
-                Name = "Cavalier"
+                Name = "Cavalier",
+                Value = 3
             });
         }
 
@@ -76,7 +82,8 @@
                 Column = i,
                 Row = 0,
                 Direction = PieceDirection.Fou,
-                Name = "Fou"
+                Name = "Fou",
+                Value = 3
             });
 
             whitePiece.Add(new Piece
@@ -85,7 +92,8 @@
                 Column = i,
                 Row = 7,
                 Direction = PieceDirection.Fou,
-                Name = "Fou"
+                Name = "Fou",
+                Value = 3
             });
         }
 
@@ -95,7 +103,8 @@
             Column = 4,
             Row = 0,
             Direction = PieceDirection.Roi,
-            Name = "Roi"
+            Name = "Roi",
+            Value = 100
         });
 
         whitePiece.Add(new Piece
@@ -104,7 +113,8 @@
             Column = 4,
             Row = 7,
             Direction = PieceDirection.Roi,
-            Name = "Roi"
+            Name = "Roi",
+            Value = 100
         });
 
         blackPiece.Add(new Piece
@@ -113,7 +123,8 @@
             Column = 3,
             Row = 0,
             Direction = PieceDirection.Reine,
-            Name = "Reine"
+            Name = "Reine",
+            Value = 9
         });
 
         whitePiece.Add(new Piece
@@ -122,8 +133,46 @@
             Column = 3,
             Row = 7,
             Direction = PieceDirection.Reine,
-            Name = "Reine"
+            Name = "Reine",
+            Value = 9
         });
+    }
+
+    Piece activePiece = null;
+    List<int> rowsPossible = new List<int>();
+    List<int> columnsPossible = new List<int>();
+
+    public void EvaluatePionNSpots()
+    {
+        rowsPossible.Clear();
+        columnsPossible.Clear();
+
+        if (activePiece != null)
+        {
+            rowsPossible.Add(activePiece.Row + 1);
+            if(activePiece.Row == 1)
+            {
+                rowsPossible.Add(activePiece.Row + 2);
+            }
+
+            columnsPossible.Add(activePiece.Column);
+        }
+    }
+    public void EvaluatePionBSpots()
+    {
+        rowsPossible.Clear();
+        columnsPossible.Clear();
+
+        if (activePiece != null)
+        {
+            rowsPossible.Add(activePiece.Row - 1);
+            if (activePiece.Row == 6)
+            {
+                rowsPossible.Add(activePiece.Row - 2);
+            }
+
+            columnsPossible.Add(activePiece.Column);
+        }
     }
 }
 
@@ -135,54 +184,68 @@
         var bPiece = blackPiece.FirstOrDefault(n => n.Column == j && n.Row == i);
         var wPiece = whitePiece.FirstOrDefault(n => n.Column == j && n.Row == i);
 
-    <div class="cell">
+        bool canMoveHere = rowsPossible.Contains(i) && columnsPossible.Contains(j); 
+
+        <div class="cell @(canMoveHere ? "active" : "")">
         @if (bPiece != null && bPiece.Name == "Pion")
         {
-            <div class="piece @bPiece.Color">&#9823;</div>
+            <div @onclick="() => { activePiece = bPiece; EvaluatePionNSpots(); }"
+                 class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9823;</div>
         }
         @if (wPiece != null && wPiece.Name == "Pion")
         {
-            <div class="piece @wPiece.Color">&#9817;</div>
+            <div @onclick="() => { activePiece = wPiece; EvaluatePionBSpots(); }"
+                 class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9817;</div>
         }
         @if (bPiece != null && bPiece.Name == "Tour")
         {
-            <div class="piece @bPiece.Color">&#9820;</div>
+            <div @onclick="() => { activePiece = bPiece; }"
+                 class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9820;</div>
         }
         @if (wPiece != null && wPiece.Name == "Tour")
         {
-            <div class="piece @wPiece.Color">&#9814;</div>
+            <div @onclick="() => { activePiece = wPiece; }"
+                 class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9814;</div>
         }
         @if (bPiece != null && bPiece.Name == "Cavalier")
         {
-            <div class="piece @bPiece.Color">&#9822;</div>
+            <div @onclick="() => { activePiece = bPiece; }"
+                 class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9822;</div>
         }
         @if (wPiece != null && wPiece.Name == "Cavalier")
         {
-            <div class="piece @wPiece.Color">&#9816;</div>
+            <div @onclick="() => { activePiece = wPiece; }"
+                 class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9816;</div>
         }
         @if (bPiece != null && bPiece.Name == "Fou")
         {
-            <div class="piece @bPiece.Color">&#9821;</div>
+            <div @onclick="() => { activePiece = bPiece; }"
+                 class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9821;</div>
         }
         @if (wPiece != null && wPiece.Name == "Fou")
         {
-            <div class="piece @wPiece.Color">&#9815;</div>
+            <div @onclick="() => { activePiece = wPiece; }"
+                 class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9815;</div>
         }
         @if (bPiece != null && bPiece.Name == "Roi")
         {
-            <div class="piece @bPiece.Color">&#9818;</div>
+            <div @onclick="() => { activePiece = bPiece; }"
+                 class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9818;</div>
         }
         @if (wPiece != null && wPiece.Name == "Roi")
         {
-            <div class="piece @wPiece.Color">&#9812;</div>
+            <div @onclick="() => { activePiece = wPiece; }"
+                 class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9812;</div>
         }
         @if (bPiece != null && bPiece.Name == "Reine")
         {
-            <div class="piece @bPiece.Color">&#9819;</div>
+            <div @onclick="() => { activePiece = bPiece; }"
+                 class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9819;</div>
         }
         @if (wPiece != null && wPiece.Name == "Reine")
         {
-            <div class="piece @wPiece.Color">&#9813;</div>
+            <div @onclick="() => { activePiece = wPiece; }"
+                 class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9813;</div>
         }
     </div>
     }
