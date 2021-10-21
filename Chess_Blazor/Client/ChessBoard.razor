@@ -174,19 +174,44 @@
             columnsPossible.Add(activePiece.Column);
         }
     }
+    public void EvaluateTourSpots()
+    {
+        rowsPossible.Clear();
+        columnsPossible.Clear();
+
+        for (int i = 0; i < 8; i++)
+        {
+            rowsPossible.Add(activePiece.Row + i);
+        }
+        columnsPossible.Add(activePiece.Column);
+    }
+
+    public void MovePiece(int row, int column)
+    {
+        bool canMoveHere = rowsPossible.Contains(row) && columnsPossible.Contains(column);
+        if (!canMoveHere)
+            return;
+        activePiece.Column = column;
+        activePiece.Row = row;
+        activePiece = null;
+    }
 }
 
 @for (int i = 0; i < 8; i++)
 {
-<div class="row">
+    int localI = i;
+
+    <div class="row">
     @for (int j = 0; j < 8; j++)
     {
-        var bPiece = blackPiece.FirstOrDefault(n => n.Column == j && n.Row == i);
-        var wPiece = whitePiece.FirstOrDefault(n => n.Column == j && n.Row == i);
+        int localJ = j;
+
+        Piece bPiece = blackPiece.FirstOrDefault(n => n.Column == j && n.Row == i);
+        Piece wPiece = whitePiece.FirstOrDefault(n => n.Column == j && n.Row == i);
 
         bool canMoveHere = rowsPossible.Contains(i) && columnsPossible.Contains(j); 
 
-        <div class="cell @(canMoveHere ? "active" : "")">
+        <div @onclick="() => MovePiece(localI, localJ)" class="cell @(canMoveHere ? "active" : "")">
         @if (bPiece != null && bPiece.Name == "Pion")
         {
             <div @onclick="() => { activePiece = bPiece; EvaluatePionNSpots(); }"
@@ -199,12 +224,12 @@
         }
         @if (bPiece != null && bPiece.Name == "Tour")
         {
-            <div @onclick="() => { activePiece = bPiece; }"
+            <div @onclick="() => { activePiece = bPiece; EvaluateTourSpots(); }"
                  class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9820;</div>
         }
         @if (wPiece != null && wPiece.Name == "Tour")
         {
-            <div @onclick="() => { activePiece = wPiece; }"
+            <div @onclick="() => { activePiece = wPiece; EvaluateTourSpots(); }"
                  class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9814;</div>
         }
         @if (bPiece != null && bPiece.Name == "Cavalier")
