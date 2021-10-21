@@ -1,9 +1,190 @@
-﻿@for(int i = 0; i < 8; i++)
+﻿@using Chess_Blazor.Client.Data
+@code{
+    List<Piece> blackPiece = new List<Piece>();
+    List<Piece> whitePiece = new List<Piece>();
+
+    protected override void OnInitialized()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            blackPiece.Add(new Piece
+            {
+                Color = "Noir",
+                Column = i,
+                Row = 1,
+                Direction = PieceDirection.Pion,
+                Name = "Pion"
+            });
+
+            whitePiece.Add(new Piece
+            {
+                Color = "Blanc",
+                Column = i,
+                Row = 6,
+                Direction = PieceDirection.Pion,
+                Name = "Pion"
+            });
+        }
+
+        for (int i = 0; i < 8; i+=7)
+        {
+            blackPiece.Add(new Piece
+            {
+                Color = "Noir",
+                Column = i,
+                Row = 0,
+                Direction = PieceDirection.Tour,
+                Name = "Tour"
+            });
+
+            whitePiece.Add(new Piece
+            {
+                Color = "Blanc",
+                Column = i,
+                Row = 7,
+                Direction = PieceDirection.Tour,
+                Name = "Tour"
+            });
+        }
+
+        for (int i = 1; i < 8; i += 5)
+        {
+            blackPiece.Add(new Piece
+            {
+                Color = "Noir",
+                Column = i,
+                Row = 0,
+                Direction = PieceDirection.Cavalier,
+                Name = "Cavalier"
+            });
+
+            whitePiece.Add(new Piece
+            {
+                Color = "Blanc",
+                Column = i,
+                Row = 7,
+                Direction = PieceDirection.Cavalier,
+                Name = "Cavalier"
+            });
+        }
+
+        for (int i = 2; i < 6; i += 3)
+        {
+            blackPiece.Add(new Piece
+            {
+                Color = "Noir",
+                Column = i,
+                Row = 0,
+                Direction = PieceDirection.Fou,
+                Name = "Fou"
+            });
+
+            whitePiece.Add(new Piece
+            {
+                Color = "Blanc",
+                Column = i,
+                Row = 7,
+                Direction = PieceDirection.Fou,
+                Name = "Fou"
+            });
+        }
+
+        blackPiece.Add(new Piece
+        {
+            Color = "Noir",
+            Column = 4,
+            Row = 0,
+            Direction = PieceDirection.Roi,
+            Name = "Roi"
+        });
+
+        whitePiece.Add(new Piece
+        {
+            Color = "Blanc",
+            Column = 4,
+            Row = 7,
+            Direction = PieceDirection.Roi,
+            Name = "Roi"
+        });
+
+        blackPiece.Add(new Piece
+        {
+            Color = "Noir",
+            Column = 3,
+            Row = 0,
+            Direction = PieceDirection.Reine,
+            Name = "Reine"
+        });
+
+        whitePiece.Add(new Piece
+        {
+            Color = "Blanc",
+            Column = 3,
+            Row = 7,
+            Direction = PieceDirection.Reine,
+            Name = "Reine"
+        });
+    }
+}
+
+@for (int i = 0; i < 8; i++)
 {
 <div class="row">
-    @for(int j = 0; j < 8; j++)
+    @for (int j = 0; j < 8; j++)
     {
-    <div class="cell"></div>
+        var bPiece = blackPiece.FirstOrDefault(n => n.Column == j && n.Row == i);
+        var wPiece = whitePiece.FirstOrDefault(n => n.Column == j && n.Row == i);
+
+    <div class="cell">
+        @if (bPiece != null && bPiece.Name == "Pion")
+        {
+            <div class="piece @bPiece.Color">&#9823;</div>
+        }
+        @if (wPiece != null && wPiece.Name == "Pion")
+        {
+            <div class="piece @wPiece.Color">&#9817;</div>
+        }
+        @if (bPiece != null && bPiece.Name == "Tour")
+        {
+            <div class="piece @bPiece.Color">&#9820;</div>
+        }
+        @if (wPiece != null && wPiece.Name == "Tour")
+        {
+            <div class="piece @wPiece.Color">&#9814;</div>
+        }
+        @if (bPiece != null && bPiece.Name == "Cavalier")
+        {
+            <div class="piece @bPiece.Color">&#9822;</div>
+        }
+        @if (wPiece != null && wPiece.Name == "Cavalier")
+        {
+            <div class="piece @wPiece.Color">&#9816;</div>
+        }
+        @if (bPiece != null && bPiece.Name == "Fou")
+        {
+            <div class="piece @bPiece.Color">&#9821;</div>
+        }
+        @if (wPiece != null && wPiece.Name == "Fou")
+        {
+            <div class="piece @wPiece.Color">&#9815;</div>
+        }
+        @if (bPiece != null && bPiece.Name == "Roi")
+        {
+            <div class="piece @bPiece.Color">&#9818;</div>
+        }
+        @if (wPiece != null && wPiece.Name == "Roi")
+        {
+            <div class="piece @wPiece.Color">&#9812;</div>
+        }
+        @if (bPiece != null && bPiece.Name == "Reine")
+        {
+            <div class="piece @bPiece.Color">&#9819;</div>
+        }
+        @if (wPiece != null && wPiece.Name == "Reine")
+        {
+            <div class="piece @wPiece.Color">&#9813;</div>
+        }
+    </div>
     }
 </div>
 }

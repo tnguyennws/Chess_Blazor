@@ -1,8 +1,4 @@
-﻿.row{
-
-}
-
-.cell{
+﻿.cell{
     height: 70px;
     width: 70px;
     padding: 10px;
@@ -23,4 +19,14 @@
 
 .row:nth-child(2n) .cell:nth-child(2n) {
     background: #eee;
+}
+
+.piece {
+    float: none;
+    width: 80px;
+    height: 80px;
+    font-size: 50px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
 }
