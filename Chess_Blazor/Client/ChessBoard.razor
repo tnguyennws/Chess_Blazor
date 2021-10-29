@@ -3,6 +3,16 @@
     List<Piece> blackPiece = new List<Piece>();
     List<Piece> whitePiece = new List<Piece>();
 
+    string[,] map = new string[8, 8]
+        {{"NTour1", "NCavalier1", "NFou1", "NReine", "NRoi", "NFou2", "NCavalier2", "NTour2" },
+         { "NPion1",  "NPion2",   "NPion3", "NPion4", "NPion5", "NPion6", "NPion7",  "NPion8" },
+         { "X",       "X",        "X",      "X",      "X",       "X",      "X",       "X" },
+         { "X",       "X",        "X",      "X",      "X",       "X",      "X",       "X" },
+         { "X",       "X",        "X",      "X",      "X",       "X",      "X",       "X" },
+         { "X",       "X",        "X",      "X",      "X",       "X",      "X",       "X" },
+         { "BPion1",  "BPion2",   "BPion3", "BPion4", "BPion5", "BPion6", "BPion7",  "BPion8" },
+         { "BTour1", "BCavalier1", "BFou1", "BReine", "BRoi", "BFou2", "BCavalier2", "BTour2"}};
+
     protected override void OnInitialized()
     {
         for (int i = 0; i < 8; i++)
@@ -28,7 +38,7 @@
             });
         }
 
-        for (int i = 0; i < 8; i+=7)
+        for (int i = 0; i < 8; i += 7)
         {
             blackPiece.Add(new Piece
             {
@@ -139,67 +149,181 @@
     }
 
     Piece activePiece = null;
-    List<int> rowsPossible = new List<int>();
-    List<int> columnsPossible = new List<int>();
+
+    bool[,] possibleMove = new bool[8, 8]
+    {
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false },
+        { false, false, false, false, false, false, false, false }
+    };
+
+    public void clearMoves()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                possibleMove[i, j] = false;
+            }
+        }
+    }
+
+    int posX, posY;
 
     public void EvaluatePionNSpots()
     {
         rowsPossible.Clear();
         columnsPossible.Clear();
+        clearMoves();
 
         if (activePiece != null)
         {
-            rowsPossible.Add(activePiece.Row + 1);
-            if(activePiece.Row == 1)
-            {
-                rowsPossible.Add(activePiece.Row + 2);
-            }
+            posX = activePiece.Row;
+            posY = activePiece.Column;
 
-            columnsPossible.Add(activePiece.Column);
+            if(map[posX + 1, posY] == "X")
+            {
+                possibleMove[posX + 1, posY] = true;
+
+                if (map[posX + 2, posY] == "X" && posX == 1)
+                {
+                    possibleMove[posX + 2, posY] = true;
+                }
+            }
+            /*if (map[posX + 1, posY + 1].FirstOrDefault() == 'B')
+            {
+                rowsPossible.Add(activePiece.Row + 1);
+                columnsPossible.Add(activePiece.Column + 1);
+            }
+            if (map[posX + 1, posY - 1].FirstOrDefault() == 'B')
+            {
+                rowsPossible.Add(activePiece.Row + 1);
+                columnsPossible.Add(activePiece.Column - 1);
+            }*/
         }
     }
+
     public void EvaluatePionBSpots()
     {
-        rowsPossible.Clear();
-        columnsPossible.Clear();
+        clearMoves();
 
         if (activePiece != null)
         {
-            rowsPossible.Add(activePiece.Row - 1);
-            if (activePiece.Row == 6)
+            posX = activePiece.Row;
+            posY = activePiece.Column;
+            if (map[posX - 1, posY] == "X")
             {
-                rowsPossible.Add(activePiece.Row - 2);
-            }
+                possibleMove[posX - 1, posY] = true;
 
-            columnsPossible.Add(activePiece.Column);
+                if (map[posX - 2, posY] == "X" && posX == 6)
+                {
+                    possibleMove[posX - 2, posY] = true;
+                }
+            }
+            /*if (map[posX - 1, posY + 1].FirstOrDefault() == 'N')
+            {
+                rowsPossible.Add(activePiece.Row - 1);
+                columnsPossible.Add(activePiece.Column + 1);
+            }
+            if (map[posX - 1, posY - 1].FirstOrDefault() == 'N')
+            {
+                rowsPossible.Add(activePiece.Row - 1);
+                columnsPossible.Add(activePiece.Column - 1);
+            }*/
         }
     }
+
     public void EvaluateTourSpots()
     {
-        rowsPossible.Clear();
-        columnsPossible.Clear();
+        clearMoves();
 
-        for (int i = 0; i < 8; i++)
+        if (activePiece != null)
         {
-            rowsPossible.Add(activePiece.Row + i);
+            posX = activePiece.Row;
+            posY = activePiece.Column;
+
+            for (int order = 0; order < 4; order++)
+            {
+                switch (order)
+                {
+                    case 0:
+                        int i = 1;
+                        while (map[posX + i, posY] == "X")
+                        {
+                            if (posX == 7)
+                                break;
+                            possibleMove[posX + i, posY] = true;
+                            i++;
+                        }
+                        break;
+
+                    case 1:
+                        int j = 1;
+                        while (map[posX - j, posY] == "X")
+                        {
+                            if (posX == 0)
+                                break;
+                            possibleMove[posX - j, posY] = true;
+                            j++;
+                        }
+                        break;
+
+                    case 2:
+                        int k = 1;
+                        while (map[posX, posY + k] == "X")
+                        {
+                            if (posY == 7)
+                                break;
+                            possibleMove[posX, posY + k] = true;
+                            k++;
+                        }
+                        break;
+
+                    case 3:
+                        int l = 1;
+                        while (map[posX, posY - l] == "X")
+                        {
+                            if (posY == 0)
+                                break;
+                            possibleMove[posX, posY - l] = true;
+                            l++;
+                        }
+                        break;
+
+                    default:
+                        Console.Write("Erreur");
+                        break;
+                }
+            }
         }
-        columnsPossible.Add(activePiece.Column);
     }
 
     public void MovePiece(int row, int column)
     {
-        bool canMoveHere = rowsPossible.Contains(row) && columnsPossible.Contains(column);
+        bool canMoveHere = possibleMove[row, column];
         if (!canMoveHere)
             return;
+
+        string tempP = map[activePiece.Row, activePiece.Column];
+        map[activePiece.Row, activePiece.Column] = "X";
+
         activePiece.Column = column;
         activePiece.Row = row;
+
+        map[activePiece.Row, activePiece.Column] = tempP;
+
         activePiece = null;
     }
-}
+        }
 
-@for (int i = 0; i < 8; i++)
-{
-    int localI = i;
+        @for (int i = 0; i < 8; i++)
+        {
+            int localI = i;
 
     <div class="row">
     @for (int j = 0; j < 8; j++)
@@ -209,7 +333,7 @@
         Piece bPiece = blackPiece.FirstOrDefault(n => n.Column == j && n.Row == i);
         Piece wPiece = whitePiece.FirstOrDefault(n => n.Column == j && n.Row == i);
 
-        bool canMoveHere = rowsPossible.Contains(i) && columnsPossible.Contains(j); 
+        bool canMoveHere = possibleMove[i, j];
 
         <div @onclick="() => MovePiece(localI, localJ)" class="cell @(canMoveHere ? "active" : "")">
         @if (bPiece != null && bPiece.Name == "Pion")
@@ -217,11 +341,11 @@
             <div @onclick="() => { activePiece = bPiece; EvaluatePionNSpots(); }"
                  class="piece @bPiece.Color @(bPiece == activePiece ? "active" : "")">&#9823;</div>
         }
-        @if (wPiece != null && wPiece.Name == "Pion")
-        {
+    @if (wPiece != null && wPiece.Name == "Pion")
+    {
             <div @onclick="() => { activePiece = wPiece; EvaluatePionBSpots(); }"
                  class="piece @wPiece.Color @(wPiece == activePiece ? "active" : "")">&#9817;</div>
-        }
+    }
         @if (bPiece != null && bPiece.Name == "Tour")
         {
             <div @onclick="() => { activePiece = bPiece; EvaluateTourSpots(); }"
